@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>FaceRecognition</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Outfit:wght@300;400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+
+<header>
+  <div class="logo">Face Recognition</div>
+  <div class="status-pill">
+    <div class="dot" id="status-dot"></div>
+    <span id="status-text">OFFLINE</span>
+  </div>
+</header>
+
+<main>
+  <!-- Camera -->
+  <div>
+    <div class="camera-wrap">
+      <div class="camera-placeholder" id="placeholder">
+        <svg width="48" height="48" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+          <path d="M15 10l4.553-2.069A1 1 0 0121 8.87v6.26a1 1 0 01-1.447.894L15 14M3 8a2 2 0 012-2h10a2 2 0 012 2v8a2 2 0 01-2 2H5a2 2 0 01-2-2V8z"/>
+        </svg>
+        <span>CAMERA INACTIVE</span>
+      </div>
+      <video id="video" autoplay muted playsinline></video>
+      <canvas id="overlay"></canvas>
+      <div class="scan-line" id="scan-line"></div>
+    </div>
+
+    <div class="controls">
+      <button class="primary" id="btn-start">START CAMERA</button>
+      <button id="btn-stop" disabled>STOP</button>
+    </div>
+  </div>
+
+  <!-- Sidebar -->
+  <div class="sidebar" style="display: none;">
+
+    <!-- Stats -->
+    <div class="panel">
+      <div class="panel-label">Live Stats</div>
+      <div class="stat-grid">
+        <div class="stat">
+          <div class="stat-value" id="stat-fps">--</div>
+          <div class="stat-key">FPS</div>
+        </div>
+        <div class="stat">
+          <div class="stat-value" id="stat-faces">0</div>
+          <div class="stat-key">Faces</div>
+        </div>
+        <div class="stat">
+          <div class="stat-value" id="stat-latency">--</div>
+          <div class="stat-key">ms / frame</div>
+        </div>
+        <div class="stat">
+          <div class="stat-value" id="stat-total">0</div>
+          <div class="stat-key">Detected</div>
+        </div>
+      </div>
+      <div class="fps-bar-wrap"><div class="fps-bar-fill" id="fps-bar"></div></div>
+    </div>
+
+    <!-- Detections -->
+    <div class="panel">
+      <div class="panel-label">Current Frame</div>
+      <div id="detections-list">
+        <div class="no-detection">No faces detected</div>
+      </div>
+    </div>
+
+    <!-- Threshold -->
+    <div class="panel">
+      <div class="panel-label">Confidence Threshold</div>
+      <div class="threshold-row">
+        <span style="font-size:0.78rem; color: var(--muted);">Min confidence</span>
+        <span id="threshold-val">0.70</span>
+      </div>
+      <input type="range" id="threshold" min="0.1" max="1.0" step="0.05" value="0.70">
+    </div>
+
+    <!-- Log -->
+    <div class="panel">
+      <div class="panel-label">Activity Log</div>
+      <div id="log"></div>
+    </div>
+
+  </div>
+</main>
+
+<script src="/static/script.js"></script>
+</body>
+</html>
