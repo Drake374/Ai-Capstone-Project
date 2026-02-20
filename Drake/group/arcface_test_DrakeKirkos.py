@@ -6,48 +6,44 @@ from datetime import datetime
 from torchvision import datasets, transforms
 from torch.utils.data import DataLoader
 from sklearn.metrics.pairwise import cosine_similarity
+import insightface
 from insightface.app import FaceAnalysis
 from insightface.model_zoo import get_model
-import insightface
+import shutil
 
-# =============================
 # Paths
-# =============================
-dataset_path = r"C:\Users\drake\Desktop\comp263\group\dataset"
-result_path = r"C:\Users\drake\Desktop\comp263\group\attendance_results"
+dataset_path = r"/content/dataset"
+result_path = r"/content/attendance_results"
 os.makedirs(result_path, exist_ok=True)
+
+# Remove .ipynb_checkpoints if it exists in the dataset path
+ipynb_checkpoints_path = os.path.join(dataset_path, "train", ".ipynb_checkpoints")
+if os.path.exists(ipynb_checkpoints_path):
+    shutil.rmtree(ipynb_checkpoints_path)
+    print(f"Removed: {ipynb_checkpoints_path}")
 
 device = "cuda" if torch.cuda.is_available() else "cpu"
 
-# =============================
 # InsightFace – RetinaFace + ArcFace
-# =============================
-face_app = FaceAnalysis(
-    name="buffalo_l",  # RetinaFace + ArcFace
-    providers=["CUDAExecutionProvider", "CPUExecutionProvider"]
-)
+face_app = FaceAnalysis()
 face_app.prepare(ctx_id=0 if device == "cuda" else -1)
 
-# ArcFace embedding model (512-D)
-arcface = get_model("arcface_r100_v1")
-arcface.prepare(ctx_id=0 if device == "cuda" else -1)
-
-# =============================
 # Image preprocessing
-# =============================
 transform = transforms.Compose([
-    transforms.ToPILImage(),
-    transforms.Resize((112, 112)),
+    transforms.Resize((112, 112)), # Removed transforms.ToPILImage() as ImageFolder already returns PIL images
     transforms.ToTensor(),
     transforms.Normalize(mean=[0.5, 0.5, 0.5],
                          std=[0.5, 0.5, 0.5])
 ])
 
-# =============================
 # Training dataset
-# =============================
+def is_image_file(filename):
+    return any(filename.endswith(extension) for extension in [".jpg", ".jpeg", ".png", ".ppm", ".bmp", ".pgm", ".tif", ".tiff", ".webp"])
+
 train_dataset = datasets.ImageFolder(
-    root=os.path.join(dataset_path, "train")
+    root=os.path.join(dataset_path, "train"),
+    is_valid_file=lambda x: is_image_file(x) and '.ipynb_checkpoints' not in x,
+    transform=transform # Add this line to apply the transform
 )
 
 train_loader = DataLoader(
@@ -56,9 +52,7 @@ train_loader = DataLoader(
     shuffle=False
 )
 
-# =============================
 # Extract training embeddings
-# =============================
 def get_train_embeddings():
     embeddings = []
     labels = []
@@ -66,10 +60,13 @@ def get_train_embeddings():
     print("Extracting train embeddings...")
 
     for img, target in train_loader:
-        img = img.squeeze(0).permute(1, 2, 0).numpy()
-        img = (img * 255).astype(np.uint8)
+        # The image is already a tensor here due to the transform
+        # No need for img.squeeze(0).permute(1, 2, 0).numpy() followed by (img * 255).astype(np.uint8)
+        # Instead, convert tensor to numpy array for face_app.get
+        img_np = img.squeeze(0).permute(1, 2, 0).cpu().numpy()
+        img_np = (img_np * 127.5 + 127.5).astype(np.uint8) # Denormalize to 0-255 range
 
-        faces = face_app.get(img)
+        faces = face_app.get(img_np)
         if len(faces) == 0:
             continue
 
@@ -86,9 +83,7 @@ def get_train_embeddings():
 
 train_embeddings, train_labels = get_train_embeddings()
 
-# =============================
 # Attendance evaluation
-# =============================
 def evaluate_test_images(threshold=0.6):
 
     test_folder = os.path.join(dataset_path, "test")
@@ -164,7 +159,5 @@ def evaluate_test_images(threshold=0.6):
     print("\nAttendance List:", attendance)
 
 
-# =============================
 # Run
-# =============================
 evaluate_test_images(threshold=0.6)
