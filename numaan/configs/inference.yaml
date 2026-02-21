@@ -1,0 +1,9 @@
+paths:
+  lfw_root: D:/centennial_4thsem/AIcapstoneproject/codefiles/capstone/lfwfunneled/lfw_funneled
+  enrolled_dir: "data/enrolled"
+  finetuned_backbone: "models/backbone_finetuned.pt"
+  anti_spoof_onnx: "models/liveness/anti_spoof_model.onnx"
+
+thresholds:
+  face_similarity: 0.55
+  liveness: 0.70

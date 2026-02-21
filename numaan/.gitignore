@@ -1,0 +1,34 @@
+@"
+# Environments
+venv/
+
+# Datasets / large data
+archive/
+lfwfunneled/
+data/vggface2/
+data/lfw/
+data/samples/
+data/vggface2_root/
+
+# Logs / exports
+logs/
+*.csv
+*.json
+
+# Python cache
+__pycache__/
+*.pyc
+
+#weights
+models/backbone_finetuned.pt
+
+
+# Notebooks checkpoints
+.ipynb_checkpoints/
+
+# Model checkpoints (optional)
+models/checkpoints/
+
+# If you DON'T want to push model weights, uncomment:
+# models/backbone_finetuned.pt
+"@ | Out-File -Encoding utf8 .\numaan\.gitignore

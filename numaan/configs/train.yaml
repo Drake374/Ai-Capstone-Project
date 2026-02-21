@@ -1,0 +1,22 @@
+seed: 42
+device: "cuda"
+
+data:
+  vggface2_root: D:/centennial_4thsem/AIcapstoneproject/codefiles/capstone/archive/vggface2_112x112
+  img_size: 160
+  batch_size: 64
+  num_workers: 4
+  # pick a subset if you don't have full VGGFace2 locally
+  max_identities: 500
+  max_images_per_id: 80
+
+train:
+  epochs_head: 3
+  epochs_finetune: 2
+  lr_head: 1.0e-3
+  lr_finetune: 1.0e-4
+  weight_decay: 1.0e-4
+  checkpoint_dir: "models/checkpoints"
+
+output:
+  finetuned_backbone_path: "models/backbone_finetuned.pt"
