@@ -1,6 +1,7 @@
 # %%
 #%%
 import os
+from pathlib import Path
 import torch
 import torch.nn as nn
 import torch.optim as optim
@@ -81,12 +82,14 @@ class FaceDataset(Dataset):
 # -----------------------------
 # Load and Modify Model
 # -----------------------------
-DATASET_PATH = "C:/Users/georg/OneDrive/Desktop/centennial/2026 winter sem/comp385/facenet_mtcnn/dataset/train"
-TEST_PATH = "C:/Users/georg/OneDrive/Desktop/centennial/2026 winter sem/comp385/facenet_mtcnn/dataset/test"
-TEST_RESULT_PATH = "C:/Users/georg/OneDrive/Desktop/centennial/2026 winter sem/comp385/facenet_mtcnn/testing_results/"
+ROOT_FOLDER = Path.cwd().as_posix()
+TRAIN_PATH = ROOT_FOLDER + "/dataset/train"
+TEST_PATH = ROOT_FOLDER + "/dataset/test"
+TEST_RESULT_PATH = ROOT_FOLDER + "/testing_results/"
+MODEL_PATH = ROOT_FOLDER + "/finetuned_model.pth"
 
 # Count number of classes
-num_classes = len([d for d in os.listdir(DATASET_PATH) if os.path.isdir(os.path.join(DATASET_PATH, d))])
+num_classes = len([d for d in os.listdir(TRAIN_PATH) if os.path.isdir(os.path.join(TRAIN_PATH, d))])
 print(f"Number of classes: {num_classes}")
 
 # Load pretrained model
@@ -118,7 +121,7 @@ resnet.logits = nn.Linear(512, num_classes).to(device)  # 512 is embedding size
 # -----------------------------
 
 # Create dataset and dataloader
-dataset = FaceDataset(DATASET_PATH, mtcnn)
+dataset = FaceDataset(TRAIN_PATH, mtcnn)
 dataloader = DataLoader(dataset, batch_size=8, shuffle=True)
 
 # Store label mappings for later use
@@ -179,7 +182,7 @@ torch.save({
     'label_to_idx': label_to_idx,
     'idx_to_label': idx_to_label,
     'num_classes': num_classes
-}, 'finetuned_model.pth')
+}, MODEL_PATH)
 print("Model saved to finetuned_model.pth")
 
 
