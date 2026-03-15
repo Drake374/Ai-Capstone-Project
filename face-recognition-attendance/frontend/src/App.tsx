@@ -1,4 +1,4 @@
-import StudentPage from './pages/StudentPage';
+import StudentPage from './pages/StudentPage.tsx';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 
 function App() {

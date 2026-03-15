@@ -1,0 +1,30 @@
+:root {
+  --preview-h: 180px;
+  --title-h: 56px;
+}
+
+.student-page {
+  height: 100vh;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.student-page__title {
+  position: fixed;
+  top: 16px;
+  left: 20px;
+  margin: 0;
+  font-size: 1.25rem;
+  z-index: 10;
+}
+
+.student-page__main {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-top: var(--title-h);
+  box-sizing: border-box;
+}
