@@ -10,7 +10,7 @@ dependencies:
   - pip
 
   # core scientific stack
-  - numpy>=1.24
+  - numpy=1.26.4
   - pillow>=10.0
   - tqdm>=4.66
   - pyyaml>=6.0
@@ -19,12 +19,12 @@ dependencies:
   # computer vision
   - opencv
 
-  # pytorch
-  - pytorch>=2.1
-  - torchvision>=0.16
 
   # pip packages
-  - pip:
+  - pip:  
+      # pytorch
+      - torch>=2.1
+      - torchvision>=0.16
       - facenet-pytorch>=2.6.0
       - fastapi>=0.110
       - uvicorn>=0.27
@@ -34,3 +34,5 @@ dependencies:
       - google-auth
       - requests
       - python-dotenv
+      - motor
+      - pydantic-settings
