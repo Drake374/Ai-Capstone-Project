@@ -3,11 +3,14 @@ import type { CapturedFrame } from '../types/frame';
 import { registerFaces } from '../services/studentService';
 
 export const useFrameRecorder = (
-  videoRef: React.RefObject<HTMLVideoElement | null>
+  videoRef: React.RefObject<HTMLVideoElement | null>,
+  studentId: string
 ) => {
   const [isRecording, setIsRecording] = useState(false);
   const [capturedFrames, setCapturedFrames] = useState<CapturedFrame[]>([]);
   const [previewMode, setPreviewMode] = useState(false);
+  const [isSaving, setIsSaving] = useState(false);
+  const [message, setMessage] = useState('');
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const recordingIntervalRef = useRef<number | null>(null);
 
@@ -67,13 +70,23 @@ export const useFrameRecorder = (
 
   const confirmFrames = useCallback(async () => {
     try {
-      await registerFaces(capturedFrames, 'current-student-id');
-      setCapturedFrames([]);
-      setPreviewMode(false);
+      setIsSaving(true);
+      setMessage('Saving...');
+      await registerFaces(capturedFrames, studentId);
+      setMessage('Face registered');
+      // Show success message for 2 seconds, then reset
+      setTimeout(() => {
+        setCapturedFrames([]);
+        setPreviewMode(false);
+        setIsSaving(false);
+        setMessage('');
+      }, 2000);
     } catch (error) {
       console.error('Save failed:', error);
+      setMessage('Save failed. Please try again.');
+      setIsSaving(false);
     }
-  }, [capturedFrames]);
+  }, [capturedFrames, studentId]);
 
   return {
     isRecording,
@@ -83,5 +96,7 @@ export const useFrameRecorder = (
     startRecording,
     cancelRecording,
     confirmFrames,
+    isSaving,
+    message,
   };
 };

@@ -1,0 +1,57 @@
+.webcam-view {
+  flex: 1;
+  min-height: 0;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+
+.webcam-view video {
+  max-width: 100%;
+  max-height: 100%;
+  width: 100vh;
+  height: 100%;
+  aspect-ratio: 4/3;
+  object-fit: cover;
+}
+
+.webcam-view canvas {
+  display: none;
+}
+
+.webcam-button {
+  position: absolute;
+  bottom: 16px;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 10px 20px;
+}
+
+.webcam-button:hover {
+  background-color: #f0f0f0;
+  cursor: pointer;
+}
+
+.webcam-preview-buttons {
+  position: absolute;
+  bottom: 16px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 10px;
+  width: 200px;
+}
+
+.accept-btn,
+.retake-btn {
+  flex: 1;
+  padding: 10px 20px;
+}
+
+.accept-btn:disabled,
+.retake-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}

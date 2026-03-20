@@ -3,8 +3,13 @@ import { useWebcam } from '../hooks/useWebcam';
 import { useFrameRecorder } from '../hooks/useFrameRecorder';
 import WebcamView from '../components/student/WebcamView';
 import FramePreview from '../components/student/FramePreview';
+import SaveModal from '../components/student/SaveModal';
 
 const StudentPage = () => {
+  // Get student ID from localStorage (assuming it's stored after login)
+  // const studentId = localStorage.getItem('studentId') || 'default-student-id';
+  const studentId = "301481867"
+
   const { webcamActive, videoRef, startWebcam } = useWebcam();
   const {
     isRecording,
@@ -14,7 +19,9 @@ const StudentPage = () => {
     startRecording,
     cancelRecording,
     confirmFrames,
-  } = useFrameRecorder(videoRef);
+    isSaving,
+    message,
+  } = useFrameRecorder(videoRef, studentId);
 
   return (
     <div className="student-page">
@@ -30,14 +37,14 @@ const StudentPage = () => {
           onStartRecording={startRecording}
           onCancelRecording={cancelRecording}
           onConfirm={confirmFrames}
+          onRetake={cancelRecording}
+          isSaving={isSaving}
         />
         <FramePreview
           frames={capturedFrames}
-          previewMode={previewMode}
-          onConfirm={confirmFrames}
-          onRetake={cancelRecording}
         />
       </main>
+      <SaveModal isOpen={isSaving || message !== ''} message={message} />
     </div>
   );
 };

@@ -1,4 +1,5 @@
 import React from 'react';
+import './WebcamView.css';
 
 interface WebcamViewProps {
   videoRef: React.RefObject<HTMLVideoElement | null>;
@@ -10,6 +11,8 @@ interface WebcamViewProps {
   onStartRecording: () => void;
   onCancelRecording: () => void;
   onConfirm: () => void;
+  onRetake: () => void;
+  isSaving?: boolean;
 }
 
 const WebcamView: React.FC<WebcamViewProps> = ({
@@ -21,16 +24,11 @@ const WebcamView: React.FC<WebcamViewProps> = ({
   onOpenCamera,
   onStartRecording,
   onCancelRecording,
+  onConfirm,
+  onRetake,
+  isSaving = false,
 }) => (
-  <div style={{
-    flex: 1,
-    minHeight: 0,
-    width: '100%',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    position: 'relative',
-  }}>
+  <div className="webcam-view">
     {!webcamActive ? (
       <button onClick={onOpenCamera}>Open Camera</button>
     ) : (
@@ -40,58 +38,27 @@ const WebcamView: React.FC<WebcamViewProps> = ({
           autoPlay
           playsInline
           muted
-          style={{
-            maxWidth: '100%',
-            maxHeight: '100%',
-            width: 'auto',
-            height: '100%',
-            aspectRatio: '4/3',
-            objectFit: 'cover',
-          }}
         />
-        <canvas ref={canvasRef} style={{ display: 'none' }} />
+        <canvas ref={canvasRef} />
 
         {!isRecording && !previewMode && (
-          <button style={{
-            position: 'absolute',
-            bottom: '16px',
-            left: '50%',
-            transform: 'translateX(-50%)',
-            padding: '10px 20px',
-          }}
-            onClick={onStartRecording}
-          >
+          <button className="webcam-button" onClick={onStartRecording}>
             Start 15s Recording
           </button>
         )}
 
         {isRecording && (
-          <button style={{
-            position: 'absolute',
-            bottom: '16px',
-            left: '50%',
-            transform: 'translateX(-50%)',
-            padding: '10px 20px',
-          }}
-            onClick={onCancelRecording}
-          >
+          <button className="webcam-button" onClick={onCancelRecording}>
             Cancel
           </button>
         )}
 
-        {/* {!isRecording && previewMode && (
-          <button style={{
-            position: 'sticky',
-            bottom: '16px',
-            left: '50%',
-            transform: 'translateX(-50%)',
-            padding: '10px 20px',
-          }}
-            onClick={onCancelRecording}
-          >
-            Retake
-          </button>
-        )} */}
+        {previewMode && (
+          <div className="webcam-preview-buttons">
+            <button onClick={onConfirm} className="accept-btn" disabled={isSaving}>Accept</button>
+            <button onClick={onRetake} className="retake-btn" disabled={isSaving}>Retake</button>
+          </div>
+        )}
       </>
     )}
   </div>
