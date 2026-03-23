@@ -1,0 +1,101 @@
+.login-page {
+  min-height: 100vh;
+  background: url("https://images.unsplash.com/photo-1523050854058-8df90110c9f1?auto=format&fit=crop&w=1600&q=80")
+    center/cover no-repeat;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+.login-overlay {
+  min-height: 100vh;
+  background: rgba(20, 20, 20, 0.65);
+  display: flex;
+  flex-direction: column;
+}
+
+.login-header {
+  padding: 30px 50px;
+}
+
+.brand-box {
+  display: inline-block;
+  background: rgba(40, 40, 40, 0.9);
+  padding: 16px 24px;
+  border-left: 6px solid #cddc39;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.brand-title {
+  color: white;
+  font-size: 32px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  line-height: 1;
+}
+
+.brand-subtitle {
+  color: #cddc39;
+  font-size: 28px;
+  font-weight: 600;
+  line-height: 1.1;
+}
+
+.login-main {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+}
+
+.login-card {
+  width: 100%;
+  max-width: 520px;
+  background: white;
+  border-radius: 14px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
+  overflow: hidden;
+  padding: 0 32px 32px;
+}
+
+.accent-bar {
+  height: 12px;
+  background: #cddc39;
+  margin: 0 -32px 28px;
+}
+
+.login-card h1 {
+  margin: 0 0 12px;
+  font-size: 34px;
+  color: #222;
+}
+
+.login-description {
+  color: #5f6368;
+  font-size: 17px;
+  line-height: 1.5;
+  margin-bottom: 28px;
+}
+
+.google-login-btn {
+  width: 100%;
+  padding: 15px 18px;
+  background: #cddc39;
+  color: #222;
+  border: none;
+  border-radius: 10px;
+  font-size: 17px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: 0.2s ease;
+}
+
+.google-login-btn:hover {
+  background: #b9c92f;
+}
+
+.login-note {
+  margin-top: 22px;
+  font-size: 14px;
+  color: #666;
+  line-height: 1.6;
+}
