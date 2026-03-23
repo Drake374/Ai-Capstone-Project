@@ -1,31 +1,55 @@
+/* ============================================================
+   Layout Tokens
+   ============================================================ */
 :root {
   --preview-h: 180px;
-  --title-h: 56px;
+  --title-h:    56px;
 }
 
+
+/* ============================================================
+   Page Shell
+   Locks the viewport — no scroll at the top level
+   ============================================================ */
 .student-page {
-  height: 100vh;
-  overflow: hidden;
   display: flex;
   flex-direction: column;
+  height: 100vh;
+  /* overflow: hidden; */
+  /* gap: 20px; */
 }
 
+
+/* ============================================================
+   Fixed Page Title
+   Sits above all content, anchored to the top-left
+   ============================================================ */
 .student-page__title {
   position: fixed;
   top: 16px;
   left: 20px;
+  z-index: 10;
+
   margin: 0;
   font-size: 1.25rem;
-  z-index: 10;
 }
 
+
+/* ============================================================
+   Main Content Area
+   Fills remaining height; offsets content below the fixed title
+   ============================================================ */
 .student-page__main {
-  flex: 1;
-  min-height: 0;
   display: flex;
   flex-direction: column;
   align-items: center;
+  justify-content: center;
+
+  flex: 1;
+  min-height: 0;           /* allows flex child to shrink below its content size */
+  width: 100%;
   padding-top: var(--title-h);
   box-sizing: border-box;
-  width: 100%;
+
+  gap: 20px;
 }
