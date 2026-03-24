@@ -2,10 +2,10 @@
   flex: 1;
   flex-shrink: 0;
   width: 100%;
-  height: var(--preview-h);
+  /* height: var(--preview-h); */
   display: flex;
   flex-direction: column;
-  padding: 8px 8px;
+  padding: 16px 16px 8px;
   box-sizing: border-box;
 }
 
@@ -25,7 +25,7 @@
   flex-shrink: 0;
   aspect-ratio: 4 / 3;
   height: 100%;
-  border-radius: 4px;
+  border-radius: var(--border-radius);
   overflow: hidden;
   background: rgba(128, 128, 128, 0.15);
 }
@@ -41,6 +41,5 @@
   flex-shrink: 0;
   aspect-ratio: 4 / 3;
   height: 100%;
-  border-radius: 4px;
-  background: rgba(128, 128, 128, 0.1);
+  background: white;
 }

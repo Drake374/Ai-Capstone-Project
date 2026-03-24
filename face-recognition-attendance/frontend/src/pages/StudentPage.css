@@ -4,6 +4,8 @@
 :root {
   --preview-h: 180px;
   --title-h:    56px;
+  --content-width: 80%;  /* Add this token for consistent width */
+  --border-radius: 16px; /* Add this token for consistent border radius */
 }
 
 
@@ -15,8 +17,8 @@
   display: flex;
   flex-direction: column;
   height: 100vh;
-  /* overflow: hidden; */
-  /* gap: 20px; */
+  background: #000000;
+  overflow: hidden;
 }
 
 
@@ -32,6 +34,7 @@
 
   margin: 0;
   font-size: 1.25rem;
+  color: white;
 }
 
 
@@ -43,13 +46,44 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
-
+  justify-content: flex-start;  /* Change from center to flex-start */
+  
   flex: 1;
   min-height: 0;           /* allows flex child to shrink below its content size */
   width: 100%;
   padding-top: var(--title-h);
   box-sizing: border-box;
-
+  
   gap: 20px;
+  overflow: hidden;  /* Add scrolling at main level if content overflows */
+}
+
+
+.student-page__top {
+  flex: 3;
+  display: flex;
+  gap: 20px;
+  width: var(--content-width);
+  min-height: 0;  /* Allow this container to shrink */
+  max-height: 100%;  /* Prevent exceeding parent bounds */
+  overflow: hidden;
+}
+
+.student-page__bottom {
+  flex: 1;
+  width: var(--content-width);
+  display: flex;
+  min-height: 0;  /* Allow this container to shrink */
+  max-height: 100%;  /* Prevent exceeding parent bounds */
+  overflow: hidden;
+  background: white;  /* Add white background */
+  border-radius: var(--border-radius);  /* Optional: add rounded corners */
+}
+
+/* Add this to ensure child components respect the height constraints */
+.student-page__top > *,
+.student-page__bottom > * {
+  min-height: 0;
+  height: 100%;
+  overflow: auto;  /* Let children scroll if needed instead of growing */
 }

@@ -1,0 +1,60 @@
+.student-status {
+    position: relative;
+    width: 320px;
+    background: white;
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+
+.student-status__top {
+    height: 15px;
+    background: #cdd95a;
+}
+
+.student-status__content {
+    padding: 24px;
+}
+
+.student-status__name {
+    margin: 0 0 8px 0;
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: #1a2a3a;
+    letter-spacing: -0.3px;
+}
+
+.student-status__id {
+    margin: 0 0 20px 0;
+    font-size: 0.9rem;
+    color: #5a6b7a;
+    font-family: 'SF Mono', 'Monaco', 'Cascadia Code', monospace;
+}
+
+.student-status__label {
+    font-weight: 500;
+    color: #8a9aa8;
+}
+
+.student-status__badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 8px 16px;
+    border-radius: 100px;
+    font-size: 0.85rem;
+    font-weight: 500;
+    gap: 6px;
+    width: fit-content;
+}
+
+.student-status__badge--registered {
+    background: #e8f5e9;
+    color: #cdd95a;
+}
+
+.student-status__badge--unregistered {
+    background: #fff3e0;
+    color: #e67e22;
+}

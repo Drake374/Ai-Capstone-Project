@@ -28,9 +28,13 @@ const WebcamView: React.FC<WebcamViewProps> = ({
   onRetake,
   isSaving = false,
 }) => (
-  <div className="webcam-view">
+  <div className="webcam-view webcam-placeholder">
     {!webcamActive ? (
-      <button onClick={onOpenCamera}>Open Camera</button>
+      <div className="webcam-placeholder">
+        <button className="open-camera-btn" onClick={onOpenCamera}>
+          Open Camera
+        </button>
+      </div>
     ) : (
       <>
         <video
