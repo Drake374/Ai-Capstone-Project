@@ -29,3 +29,21 @@ class AttendanceLogResponse(BaseModel):
     status: str
     similarity: float
     timestamp: datetime
+
+
+class Student(BaseModel):
+    student_id: str
+    name: str
+    email: str
+    photo_url: str = ""
+    registered: bool = False
+    created_at: datetime = Field(default_factory=datetime.now)
+
+
+class StudentResponse(BaseModel):
+    student_id: str
+    name: str
+    email: str
+    photo_url: str
+    registered: bool
+    created_at: datetime

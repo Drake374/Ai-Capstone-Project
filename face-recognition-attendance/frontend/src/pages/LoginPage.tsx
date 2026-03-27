@@ -1,25 +1,72 @@
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { loginWithGoogle } from "../services/authService";
+import { registerStudent } from "../services/studentService";
 import "./LoginPage.css";
 
 const LoginPage = () => {
   const navigate = useNavigate();
+  const [showIdPrompt, setShowIdPrompt] = useState(false);
+  const [studentId, setStudentId] = useState("");
+  const [googleUser, setGoogleUser] = useState<{
+    name: string;
+    email: string;
+    photo: string;
+  } | null>(null);
+  const [isRegistering, setIsRegistering] = useState(false);
 
   const handleLogin = async () => {
     try {
       const user = await loginWithGoogle();
 
+      setGoogleUser({
+        name: user.displayName || "",
+        email: user.email || "",
+        photo: user.photoURL || "",
+      });
+
+      // Show the student ID prompt
+      setShowIdPrompt(true);
+    } catch (error) {
+      console.error(error);
+      alert("Login failed. Please try again.");
+    }
+  };
+
+  const handleSubmitStudentId = async () => {
+    if (!studentId.trim()) {
+      alert("Please enter your Student ID.");
+      return;
+    }
+
+    if (!googleUser) return;
+
+    setIsRegistering(true);
+    try {
+      // Register/update the student in the backend
+      const result = await registerStudent(
+        studentId.trim(),
+        googleUser.name,
+        googleUser.email,
+        googleUser.photo
+      );
+
+      // Store user data in localStorage
       const userData = {
-        name: user.displayName,
-        email: user.email,
-        photo: user.photoURL,
+        name: googleUser.name,
+        email: googleUser.email,
+        photo: googleUser.photo,
+        studentId: result.student_id,
+        registered: result.registered,
       };
 
       localStorage.setItem("user", JSON.stringify(userData));
       navigate("/");
     } catch (error) {
-      console.error(error);
-      alert("Login failed. Please try again.");
+      console.error("Registration failed:", error);
+      alert("Failed to register student. Please try again.");
+    } finally {
+      setIsRegistering(false);
     }
   };
 
@@ -38,19 +85,49 @@ const LoginPage = () => {
             <div className="accent-bar"></div>
 
             <h1>AI Attendance Portal</h1>
-            <p className="login-description">
-              Sign in using your Google account to simulate Centennial access.
-            </p>
 
-            <button className="google-login-btn" onClick={handleLogin}>
-              Sign in with Google
-            </button>
+            {!showIdPrompt ? (
+              <>
+                <p className="login-description">
+                  Sign in using your Google account to simulate Centennial
+                  access.
+                </p>
 
-            <p className="login-note">
-              Students can access face registration and attendance.
-              <br />
-              Admin and instructors can review and download logs.
-            </p>
+                <button className="google-login-btn" onClick={handleLogin}>
+                  Sign in with Google
+                </button>
+
+                <p className="login-note">
+                  Students can access face registration and attendance.
+                  <br />
+                  Admin and instructors can review and download logs.
+                </p>
+              </>
+            ) : (
+              <>
+                <p className="login-description">
+                  Welcome, <strong>{googleUser?.name}</strong>! Please enter
+                  your Student ID to continue.
+                </p>
+
+                <input
+                  type="text"
+                  value={studentId}
+                  onChange={(e) => setStudentId(e.target.value)}
+                  placeholder="Enter your Student ID (e.g. 301481867)"
+                  className="student-id-input"
+                  onKeyDown={(e) => e.key === "Enter" && handleSubmitStudentId()}
+                />
+
+                <button
+                  className="google-login-btn"
+                  onClick={handleSubmitStudentId}
+                  disabled={isRegistering}
+                >
+                  {isRegistering ? "Registering..." : "Continue"}
+                </button>
+              </>
+            )}
           </div>
         </main>
       </div>

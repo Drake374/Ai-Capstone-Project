@@ -2,6 +2,7 @@ from fastapi import APIRouter, Query
 from fastapi.responses import StreamingResponse
 from datetime import datetime, timedelta
 from db.attendance_repo import get_attendance_logs
+from db.student_repo import get_student
 import csv
 import io
 
@@ -18,15 +19,20 @@ async def attendance_logs(
     end = _parse_end_date(end_date)
 
     logs = await get_attendance_logs(start_date=start, end_date=end)
-    return [
-        {
+
+    # Lookup student names
+    results = []
+    for log in logs:
+        student = await get_student(log.student_id)
+        results.append({
             "student_id": log.student_id,
+            "student_name": student.name if student else "Unknown",
             "status": log.status,
             "similarity": round(log.similarity, 4),
             "timestamp": log.timestamp.isoformat(),
-        }
-        for log in logs
-    ]
+        })
+
+    return results
 
 
 @router.get("/attendance-logs/export")
@@ -43,11 +49,13 @@ async def export_attendance_logs(
     # Build CSV in memory
     output = io.StringIO()
     writer = csv.writer(output)
-    writer.writerow(["Student ID", "Status", "Similarity", "Timestamp"])
+    writer.writerow(["Student ID", "Student Name", "Status", "Similarity", "Timestamp"])
 
     for log in logs:
+        student = await get_student(log.student_id)
         writer.writerow([
             log.student_id,
+            student.name if student else "Unknown",
             log.status,
             f"{log.similarity:.4f}",
             log.timestamp.strftime("%Y-%m-%d %H:%M:%S"),
@@ -80,3 +88,4 @@ def _parse_end_date(date_str: str | None) -> datetime | None:
         return None
     # End date should be the END of that day (start of next day)
     return datetime.strptime(date_str, "%Y-%m-%d") + timedelta(days=1)
+

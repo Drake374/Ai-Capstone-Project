@@ -4,6 +4,7 @@ const BASE_URL = 'http://localhost:8000/api';
 
 export interface AttendanceLogEntry {
   student_id: string;
+  student_name: string;
   status: string;
   similarity: number;
   timestamp: string;

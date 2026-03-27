@@ -22,3 +22,8 @@ async def get_all_embeddings() -> list[FaceEmbeddingResponse]:
     cursor = _col.find({}, {"_id": 0, "student_id": 1, "embedding": 1, "created_at": 1})
     results = await cursor.to_list(length=None)
     return [FaceEmbeddingResponse(**doc) for doc in results]
+
+
+async def count_embeddings(student_id: str) -> int:
+    """Return the number of stored embeddings for a student."""
+    return await _col.count_documents({"student_id": student_id})

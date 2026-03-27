@@ -140,6 +140,7 @@ const AdminPage = () => {
                 <tr>
                   <th>#</th>
                   <th>Student ID</th>
+                  <th>Student Name</th>
                   <th>Status</th>
                   <th>Similarity</th>
                   <th>Timestamp</th>
@@ -150,6 +151,7 @@ const AdminPage = () => {
                   <tr key={index}>
                     <td>{index + 1}</td>
                     <td>{log.student_id}</td>
+                    <td>{log.student_name}</td>
                     <td>
                       <span
                         className={

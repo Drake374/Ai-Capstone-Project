@@ -1,3 +1,5 @@
+import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import './StudentPage.css';
 import { useWebcam } from '../hooks/useWebcam';
 import { useFrameRecorder } from '../hooks/useFrameRecorder';
@@ -5,11 +7,18 @@ import WebcamView from '../components/student/WebcamView';
 import FramePreview from '../components/student/FramePreview';
 import SaveModal from '../components/student/SaveModal';
 import StudentStatus from '../components/student/StudentStatus';
+import { getStudentProfile } from '../services/studentService';
 
 const StudentPage = () => {
-  // Get student ID from localStorage (assuming it's stored after login)
-  // const studentId = localStorage.getItem('studentId') || 'default-student-id';
-  const studentId = "301481867"
+  // Get student info from localStorage (set during login)
+  const user = JSON.parse(localStorage.getItem('user') || '{}');
+  const studentId = user.studentId || '';
+  const studentName = user.name || 'Unknown';
+  const navigate = useNavigate();
+
+  // Profile state from API
+  const [registered, setRegistered] = useState(user.registered || false);
+  const [faceCount, setFaceCount] = useState(0);
 
   const { webcamActive, videoRef, startWebcam } = useWebcam();
   const {
@@ -23,6 +32,18 @@ const StudentPage = () => {
     isSaving,
     message,
   } = useFrameRecorder(videoRef, studentId);
+
+  // Fetch latest profile from API
+  useEffect(() => {
+    if (user.email) {
+      getStudentProfile(user.email).then((profile) => {
+        if (profile.found) {
+          setRegistered(profile.registered || false);
+          setFaceCount(profile.face_count || 0);
+        }
+      }).catch(console.error);
+    }
+  }, [user.email, message]); // re-fetch after save completes (message changes)
 
   return (
     <div className="student-page">
@@ -43,10 +64,10 @@ const StudentPage = () => {
             isSaving={isSaving}
           />
           <StudentStatus
-            studentName="John Doe"
+            studentName={studentName}
             studentId={studentId}
-            registered={false}
-            registeredFacesCount={0}
+            registered={registered}
+            registeredFacesCount={faceCount}
           />
         </div>
         <div className="student-page__bottom">
@@ -56,6 +77,10 @@ const StudentPage = () => {
         </div>
       </main>
       <SaveModal isOpen={isSaving || message !== ''} message={message} />
+
+      <button className="student-page__back-btn" onClick={() => navigate('/')}>
+        ← Back to Dashboard
+      </button>
     </div>
   );
 };
