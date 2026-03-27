@@ -7,3 +7,14 @@ export const registerFaces = (
 ): Promise<void> => {
   return apiPost('/student/register-faces', { frames, studentId });
 };
+
+export interface VerifyFaceResult {
+  matched: boolean;
+  student_id?: string;
+  similarity?: number;
+  reason?: string;
+}
+
+export const verifyFace = (imageData: string): Promise<VerifyFaceResult> => {
+  return apiPost('/student/verify-face', { imageData });
+};

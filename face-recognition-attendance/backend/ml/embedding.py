@@ -61,3 +61,15 @@ def extract_embeddings(image: Image.Image) -> list[float] | None:
     except Exception as e:
         logger.error(f"Error extracting embedding: {e}")
         raise
+
+
+def cosine_similarity(a: list[float], b: list[float]) -> float:
+    """Compute cosine similarity between two embedding vectors."""
+    a_np = np.array(a)
+    b_np = np.array(b)
+    dot = np.dot(a_np, b_np)
+    norm_a = np.linalg.norm(a_np)
+    norm_b = np.linalg.norm(b_np)
+    if norm_a == 0 or norm_b == 0:
+        return 0.0
+    return float(dot / (norm_a * norm_b))

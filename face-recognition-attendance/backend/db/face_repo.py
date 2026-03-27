@@ -19,6 +19,6 @@ async def save_embeddings(student_id: str, embeddings: list[list[float]]) -> Non
 
 
 async def get_all_embeddings() -> list[FaceEmbeddingResponse]:
-    cursor = _col.find({}, {"_id": 0, "student_id": 1, "embedding": 1})
+    cursor = _col.find({}, {"_id": 0, "student_id": 1, "embedding": 1, "created_at": 1})
     results = await cursor.to_list(length=None)
     return [FaceEmbeddingResponse(**doc) for doc in results]

@@ -1,6 +1,7 @@
 from fastapi import FastAPI, APIRouter
 from fastapi.middleware.cors import CORSMiddleware
 from api.student import router as student_router
+from api.admin import router as admin_router
 import logging
 
 # Configure logging
@@ -20,6 +21,7 @@ app.add_middleware(
 # Include API routes under /api prefix
 api_router = APIRouter(prefix="/api")
 api_router.include_router(student_router, prefix="/student")
+api_router.include_router(admin_router, prefix="/admin")
 
 app.include_router(api_router)
 

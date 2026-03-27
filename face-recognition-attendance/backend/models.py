@@ -15,3 +15,17 @@ class FaceEmbeddingResponse(BaseModel):
     student_id: str
     embedding: list[float]
     created_at: datetime
+
+
+class AttendanceLog(BaseModel):
+    student_id: str
+    status: str  # "present" or "absent"
+    similarity: float
+    timestamp: datetime = Field(default_factory=datetime.now)
+
+
+class AttendanceLogResponse(BaseModel):
+    student_id: str
+    status: str
+    similarity: float
+    timestamp: datetime

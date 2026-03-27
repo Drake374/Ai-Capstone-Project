@@ -13,3 +13,13 @@ export const apiPost = async <T>(endpoint: string, body: unknown): Promise<T> =>
 
   return response.json();
 };
+
+export const apiGet = async <T>(endpoint: string): Promise<T> => {
+  const response = await fetch(`${BASE_URL}${endpoint}`);
+
+  if (!response.ok) {
+    throw new Error(`API error: ${response.status} ${response.statusText}`);
+  }
+
+  return response.json();
+};
