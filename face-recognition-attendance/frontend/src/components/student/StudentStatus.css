@@ -11,7 +11,7 @@
 
 .student-status__top {
     height: 15px;
-    background: #cdd95a;
+    background: var(--lg);
 }
 
 .student-status__content {

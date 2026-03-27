@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
 import './StudentPage.css';
+import { useNavigate } from 'react-router-dom';
 import { useWebcam } from '../hooks/useWebcam';
 import { useFrameRecorder } from '../hooks/useFrameRecorder';
 import WebcamView from '../components/student/WebcamView';
@@ -10,7 +10,8 @@ import StudentStatus from '../components/student/StudentStatus';
 import { getStudentProfile } from '../services/studentService';
 
 const StudentPage = () => {
-  // Get student info from localStorage (set during login)
+  // Get student ID from localStorage (assuming it's stored after login)
+  // const studentId = localStorage.getItem('studentId') || 'default-student-id';
   const user = JSON.parse(localStorage.getItem('user') || '{}');
   const studentId = user.studentId || '';
   const studentName = user.name || 'Unknown';
@@ -47,7 +48,7 @@ const StudentPage = () => {
 
   return (
     <div className="student-page">
-      <h1 className="student-page__title">Student Attendance</h1>
+      <h1 className="student-page__title">Face Registration</h1>
       <main className="student-page__main">
         <div className="student-page__top">
           <WebcamView
@@ -75,7 +76,11 @@ const StudentPage = () => {
             frames={capturedFrames}
           />
         </div>
+        
       </main>
+      <button className="student-page__back-btn" onClick={() => navigate('/')}>
+        ← Back to Dashboard
+      </button>
       <SaveModal isOpen={isSaving || message !== ''} message={message} />
 
       <button className="student-page__back-btn" onClick={() => navigate('/')}>

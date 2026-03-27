@@ -28,7 +28,7 @@ const WebcamView: React.FC<WebcamViewProps> = ({
   onRetake,
   isSaving = false,
 }) => (
-  <div className="webcam-view webcam-placeholder">
+  <div className="webcam-view">
     {!webcamActive ? (
       <div className="webcam-placeholder">
         <button className="open-camera-btn" onClick={onOpenCamera}>
@@ -36,7 +36,7 @@ const WebcamView: React.FC<WebcamViewProps> = ({
         </button>
       </div>
     ) : (
-      <>
+      <div className="video-container">
         <video
           ref={videoRef}
           autoPlay
@@ -44,26 +44,32 @@ const WebcamView: React.FC<WebcamViewProps> = ({
           muted
         />
         <canvas ref={canvasRef} />
+        
+        <div className="video-buttons">
+          {!isRecording && !previewMode && (
+            <button className="webcam-button" onClick={onStartRecording}>
+              Start 15s Recording
+            </button>
+          )}
 
-        {!isRecording && !previewMode && (
-          <button className="webcam-button" onClick={onStartRecording}>
-            Start 15s Recording
-          </button>
-        )}
+          {isRecording && (
+            <button className="webcam-button" onClick={onCancelRecording}>
+              Cancel
+            </button>
+          )}
 
-        {isRecording && (
-          <button className="webcam-button" onClick={onCancelRecording}>
-            Cancel
-          </button>
-        )}
-
-        {previewMode && (
-          <div className="webcam-preview-buttons">
-            <button onClick={onConfirm} className="accept-btn" disabled={isSaving}>Accept</button>
-            <button onClick={onRetake} className="retake-btn" disabled={isSaving}>Retake</button>
-          </div>
-        )}
-      </>
+          {previewMode && (
+            <div className="webcam-preview-buttons">
+              <button onClick={onConfirm} className="accept-btn" disabled={isSaving}>
+                Accept
+              </button>
+              <button onClick={onRetake} className="retake-btn" disabled={isSaving}>
+                Retake
+              </button>
+            </div>
+          )}
+        </div>
+      </div>
     )}
   </div>
 );
