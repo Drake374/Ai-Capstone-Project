@@ -59,9 +59,11 @@ const HomePage: React.FC = () => {
           Attendance
         </button>
 
-        <button onClick={() => navigate("/admin")} style={btnStyle}>
-          Admin Panel
-        </button>
+        {user.role === "admin" && (
+          <button onClick={() => navigate("/admin")} style={btnStyle}>
+            Admin Panel
+          </button>
+        )}
       </div>
 
       <button onClick={handleLogout} style={logoutStyle}>

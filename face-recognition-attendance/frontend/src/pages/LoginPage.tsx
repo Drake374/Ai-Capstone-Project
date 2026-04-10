@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { loginWithGoogle } from "../services/authService";
-import { registerStudent } from "../services/studentService";
+import { getStudentProfile, registerStudent } from "../services/studentService";
 import "./LoginPage.css";
 
 const LoginPage = () => {
@@ -18,12 +18,31 @@ const LoginPage = () => {
   const handleLogin = async () => {
     try {
       const user = await loginWithGoogle();
+      const email = user.email || "";
+      const profile = email ? await getStudentProfile(email) : { found: false };
 
-      setGoogleUser({
+      const nextRole = profile.role === "admin" ? "admin" : "student";
+
+      const nextUser = {
         name: user.displayName || "",
-        email: user.email || "",
+        email,
         photo: user.photoURL || "",
-      });
+      };
+
+      setGoogleUser(nextUser);
+
+      if (nextRole === "admin") {
+        localStorage.setItem(
+          "user",
+          JSON.stringify({
+            ...nextUser,
+            role: "admin",
+            registered: true,
+          })
+        );
+        navigate("/");
+        return;
+      }
 
       // Show the student ID prompt
       setShowIdPrompt(true);
@@ -56,6 +75,7 @@ const LoginPage = () => {
         name: googleUser.name,
         email: googleUser.email,
         photo: googleUser.photo,
+        role: result.role,
         studentId: result.student_id,
         registered: result.registered,
       };

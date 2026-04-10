@@ -32,8 +32,12 @@ export const exportAttendanceCsv = async (
 
   const query = params.toString() ? `?${params.toString()}` : '';
   const url = `${BASE_URL}/admin/attendance-logs/export${query}`;
+  const rawUser = localStorage.getItem('user');
+  const user = rawUser ? JSON.parse(rawUser) : null;
 
-  const response = await fetch(url);
+  const response = await fetch(url, {
+    headers: user?.email ? { 'x-user-email': user.email } : {},
+  });
   if (!response.ok) {
     throw new Error(`Export failed: ${response.status}`);
   }

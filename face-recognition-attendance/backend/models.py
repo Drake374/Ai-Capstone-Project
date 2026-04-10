@@ -36,6 +36,7 @@ class Student(BaseModel):
     name: str
     email: str
     photo_url: str = ""
+    role: str = "student"
     registered: bool = False
     created_at: datetime = Field(default_factory=datetime.now)
 
@@ -45,5 +46,6 @@ class StudentResponse(BaseModel):
     name: str
     email: str
     photo_url: str
+    role: str = "student"
     registered: bool
     created_at: datetime

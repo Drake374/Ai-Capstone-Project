@@ -5,8 +5,18 @@ from services.face_service import register_student_faces, verify_face
 from db.student_repo import upsert_student, get_student_by_email, get_student
 from db.student_repo import mark_registered as mark_student_registered
 from db.face_repo import count_embeddings
+from config import settings
 
 router = APIRouter()
+
+
+def _is_admin_email(email: str) -> bool:
+    admin_emails = {
+        item.strip().lower()
+        for item in settings.admin_emails.split(",")
+        if item.strip()
+    }
+    return email.strip().lower() in admin_emails
 
 
 class Frame(BaseModel):
@@ -44,6 +54,7 @@ async def register_student(body: RegisterStudentRequest):
             "student_id": student.student_id,
             "name": student.name,
             "email": student.email,
+            "role": student.role,
             "registered": student.registered,
         }
     except Exception as e:
@@ -53,10 +64,22 @@ async def register_student(body: RegisterStudentRequest):
 
 @router.get("/profile")
 async def get_profile(email: str = Query(..., description="Student email")):
-    """Get student profile by email, including registration status and face count."""
+    """Get user profile by email, including role and student registration state."""
+    if _is_admin_email(email):
+        return {
+            "found": True,
+            "role": "admin",
+            "student_id": "",
+            "name": "",
+            "email": email,
+            "photo_url": "",
+            "registered": True,
+            "face_count": 0,
+        }
+
     student = await get_student_by_email(email)
     if not student:
-        return {"found": False}
+        return {"found": False, "role": "student"}
 
     faces = await count_embeddings(student.student_id)
     return {
@@ -65,6 +88,7 @@ async def get_profile(email: str = Query(..., description="Student email")):
         "name": student.name,
         "email": student.email,
         "photo_url": student.photo_url,
+        "role": student.role,
         "registered": student.registered,
         "face_count": faces,
     }

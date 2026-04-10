@@ -1,20 +1,37 @@
-from fastapi import APIRouter, Query
+from fastapi import APIRouter, Header, HTTPException, Query
 from fastapi.responses import StreamingResponse
 from datetime import datetime, timedelta
 from db.attendance_repo import get_attendance_logs
 from db.student_repo import get_student
 import csv
 import io
+from config import settings
 
 router = APIRouter()
+
+
+def _require_admin(x_user_email: str | None = Header(None)) -> str:
+    admin_emails = {
+        item.strip().lower()
+        for item in settings.admin_emails.split(",")
+        if item.strip()
+    }
+    user_email = (x_user_email or "").strip().lower()
+
+    if not user_email or user_email not in admin_emails:
+        raise HTTPException(status_code=403, detail="Admin access required")
+
+    return user_email
 
 
 @router.get("/attendance-logs")
 async def attendance_logs(
     start_date: str | None = Query(None, description="Start date (YYYY-MM-DD)"),
     end_date: str | None = Query(None, description="End date (YYYY-MM-DD)"),
+    _: str = Header(None, alias="x-user-email"),
 ):
     """Get attendance logs within a date range. Defaults to today."""
+    _require_admin(_)
     start = _parse_date(start_date)
     end = _parse_end_date(end_date)
 
@@ -39,8 +56,10 @@ async def attendance_logs(
 async def export_attendance_logs(
     start_date: str | None = Query(None, description="Start date (YYYY-MM-DD)"),
     end_date: str | None = Query(None, description="End date (YYYY-MM-DD)"),
+    _: str = Header(None, alias="x-user-email"),
 ):
     """Export attendance logs as a CSV file download."""
+    _require_admin(_)
     start = _parse_date(start_date)
     end = _parse_end_date(end_date)
 

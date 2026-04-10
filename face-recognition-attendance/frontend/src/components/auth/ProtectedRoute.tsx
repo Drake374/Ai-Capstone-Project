@@ -1,10 +1,22 @@
+import type { ReactNode } from "react";
 import { Navigate } from "react-router-dom";
 
-const ProtectedRoute = ({ children }: any) => {
-  const user = localStorage.getItem("user");
+type ProtectedRouteProps = {
+  children: ReactNode;
+  requiredRole?: "admin" | "student";
+};
 
-  if (!user) {
+const ProtectedRoute = ({ children, requiredRole }: ProtectedRouteProps) => {
+  const rawUser = localStorage.getItem("user");
+
+  if (!rawUser) {
     return <Navigate to="/login" replace />;
+  }
+
+  const user = JSON.parse(rawUser);
+
+  if (requiredRole && user.role !== requiredRole) {
+    return <Navigate to="/" replace />;
   }
 
   return children;

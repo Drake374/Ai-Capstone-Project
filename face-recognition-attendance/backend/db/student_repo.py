@@ -16,7 +16,7 @@ async def upsert_student(
         # Update existing student with latest info
         await _col.update_one(
             {"email": email},
-            {"$set": {"name": name, "photo_url": photo_url, "student_id": student_id}},
+            {"$set": {"name": name, "photo_url": photo_url, "student_id": student_id, "role": "student"}},
         )
         updated = await _col.find_one({"email": email}, {"_id": 0})
         return StudentResponse(**updated)

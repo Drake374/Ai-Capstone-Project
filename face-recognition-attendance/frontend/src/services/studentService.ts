@@ -23,6 +23,7 @@ export interface RegisterStudentResult {
   student_id: string;
   name: string;
   email: string;
+  role: 'student' | 'admin';
   registered: boolean;
 }
 
@@ -37,6 +38,7 @@ export const registerStudent = (
 
 export interface StudentProfile {
   found: boolean;
+  role?: 'student' | 'admin';
   student_id?: string;
   name?: string;
   email?: string;
