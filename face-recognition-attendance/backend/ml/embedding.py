@@ -3,19 +3,38 @@ import numpy as np
 from PIL import Image
 from facenet_pytorch import MTCNN, InceptionResnetV1
 import logging
+from pathlib import Path
+
+from config import settings
 
 logger = logging.getLogger(__name__)
 
 # Initialise once at import time (CPU-friendly for small scale)
 _device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 logger.info(f"Using device: {_device}")
+_project_root = Path(__file__).resolve().parents[2]
+_custom_model_path = Path(settings.custom_model_path)
+
+if not _custom_model_path.is_absolute():
+    _custom_model_path = _project_root / _custom_model_path
 
 _mtcnn = None
 _resnet = None
 
 try:
     _mtcnn = MTCNN(image_size=160, margin=20, device=_device, keep_all=False)
-    _resnet = InceptionResnetV1(pretrained="vggface2").eval().to(_device)
+    _resnet = InceptionResnetV1(pretrained="vggface2", classify=False).eval().to(_device)
+
+    if _custom_model_path.exists():
+        state_dict = torch.load(_custom_model_path, map_location=_device)
+        _resnet.load_state_dict(state_dict)
+        logger.info(f"Loaded finetuned FaceNet backbone from {_custom_model_path}")
+    else:
+        logger.warning(
+            f"Finetuned backbone not found at {_custom_model_path}. "
+            "Falling back to pretrained vggface2 weights."
+        )
+
     logger.info("FaceNet models loaded successfully")
 except Exception as e:
     logger.error(f"Failed to load FaceNet models: {e}")

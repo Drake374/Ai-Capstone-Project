@@ -21,8 +21,8 @@ const HomePage: React.FC = () => {
     <div
       style={{
         minHeight: "100vh",
-        backgroundColor: "#1f1f1f",
-        color: "white",
+        backgroundColor: "#5f5f5f",
+        color: "#1f1f1f",
         padding: "40px",
         fontFamily: "Arial, sans-serif",
       }}
@@ -88,7 +88,7 @@ const logoutStyle: React.CSSProperties = {
   padding: "12px 26px",
   borderRadius: "8px",
   border: "none",
-  backgroundColor: "#ffffff",
+  backgroundColor: "#f5f5f5",
   color: "#1f1f1f",
   fontWeight: "bold",
   cursor: "pointer",
