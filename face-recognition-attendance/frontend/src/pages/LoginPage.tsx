@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { loginWithGoogle } from "../services/authService";
-import { getStudentProfile, registerStudent } from "../services/studentService";
+import { getStudentProfile, registerAdmin, registerStudent } from "../services/studentService";
 import "./LoginPage.css";
 
 const LoginPage = () => {
@@ -32,11 +32,16 @@ const LoginPage = () => {
       setGoogleUser(nextUser);
 
       if (nextRole === "admin") {
+        const adminRecord = await registerAdmin(
+          nextUser.name,
+          nextUser.email,
+          nextUser.photo
+        );
         localStorage.setItem(
           "user",
           JSON.stringify({
             ...nextUser,
-            role: "admin",
+            role: adminRecord.role,
             registered: true,
           })
         );

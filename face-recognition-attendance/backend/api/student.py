@@ -4,6 +4,7 @@ from typing import List, Optional
 from services.face_service import register_student_faces, verify_face
 from db.student_repo import upsert_student, get_student_by_email, get_student
 from db.student_repo import mark_registered as mark_student_registered
+from db.admin_repo import get_admin_by_email, upsert_admin
 from db.face_repo import count_embeddings
 from config import settings
 
@@ -31,10 +32,17 @@ class RegisterFacesRequest(BaseModel):
 
 class VerifyFaceRequest(BaseModel):
     imageData: str  # base64 encoded image
+    expectedStudentId: str | None = None
 
 
 class RegisterStudentRequest(BaseModel):
     studentId: str
+    name: str
+    email: str
+    photoUrl: str = ""
+
+
+class RegisterAdminRequest(BaseModel):
     name: str
     email: str
     photoUrl: str = ""
@@ -62,17 +70,41 @@ async def register_student(body: RegisterStudentRequest):
         raise HTTPException(status_code=500, detail=traceback.format_exc())
 
 
+@router.post("/register-admin")
+async def register_admin(body: RegisterAdminRequest):
+    """Create or update an admin profile."""
+    if not _is_admin_email(body.email):
+        raise HTTPException(status_code=403, detail="Email is not configured as an admin")
+
+    try:
+        admin = await upsert_admin(
+            name=body.name,
+            email=body.email,
+            photo_url=body.photoUrl,
+        )
+        return {
+            "name": admin.name,
+            "email": admin.email,
+            "photo_url": admin.photo_url,
+            "role": admin.role,
+        }
+    except Exception:
+        import traceback
+        raise HTTPException(status_code=500, detail=traceback.format_exc())
+
+
 @router.get("/profile")
 async def get_profile(email: str = Query(..., description="Student email")):
     """Get user profile by email, including role and student registration state."""
     if _is_admin_email(email):
+        admin = await get_admin_by_email(email)
         return {
             "found": True,
             "role": "admin",
             "student_id": "",
-            "name": "",
+            "name": admin.name if admin else "",
             "email": email,
-            "photo_url": "",
+            "photo_url": admin.photo_url if admin else "",
             "registered": True,
             "face_count": 0,
         }
@@ -122,7 +154,10 @@ async def verify_face_endpoint(body: VerifyFaceRequest):
         raise HTTPException(status_code=400, detail="No image data provided")
 
     try:
-        result = await verify_face(frame_data_url=body.imageData)
+        result = await verify_face(
+            frame_data_url=body.imageData,
+            expected_student_id=body.expectedStudentId,
+        )
         return result
     except Exception as e:
         import traceback

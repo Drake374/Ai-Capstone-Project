@@ -47,7 +47,7 @@ async def register_student_faces(student_id: str, frames: list[str]) -> None:
     await save_embeddings(student_id=student_id, embeddings=embeddings)
 
 
-async def verify_face(frame_data_url: str) -> dict:
+async def verify_face(frame_data_url: str, expected_student_id: str | None = None) -> dict:
     """
     Verify a face against all stored embeddings using cosine similarity.
     Returns match result with student_id and similarity score.
@@ -83,8 +83,13 @@ async def verify_face(frame_data_url: str) -> dict:
 
     logger.info(f"Best match: student_id={best_student_id}, similarity={best_similarity:.4f}")
 
+    is_match = best_similarity >= SIMILARITY_THRESHOLD
+    matched_expected_student = (
+        expected_student_id is None or best_student_id == expected_student_id
+    )
+
     # 5. Save attendance log and return result
-    if best_similarity >= SIMILARITY_THRESHOLD:
+    if is_match and matched_expected_student:
         await save_attendance_log(
             student_id=best_student_id,
             status="present",
@@ -95,14 +100,19 @@ async def verify_face(frame_data_url: str) -> dict:
             "student_id": best_student_id,
             "similarity": round(best_similarity, 4),
         }
-    else:
-        await save_attendance_log(
-            student_id=best_student_id or "unknown",
-            status="absent",
-            similarity=best_similarity,
-        )
-        return {
-            "matched": False,
-            "similarity": round(best_similarity, 4),
-            "reason": "Face did not match any registered student",
-        }
+    student_id_for_log = expected_student_id or best_student_id or "unknown"
+    reason = "Face did not match any registered student"
+
+    if is_match and expected_student_id and best_student_id != expected_student_id:
+        reason = "Face matched a different registered student"
+
+    await save_attendance_log(
+        student_id=student_id_for_log,
+        status="absent",
+        similarity=best_similarity,
+    )
+    return {
+        "matched": False,
+        "similarity": round(best_similarity, 4),
+        "reason": reason,
+    }

@@ -49,3 +49,19 @@ class StudentResponse(BaseModel):
     role: str = "student"
     registered: bool
     created_at: datetime
+
+
+class Admin(BaseModel):
+    name: str
+    email: str
+    photo_url: str = ""
+    role: str = "admin"
+    created_at: datetime = Field(default_factory=datetime.now)
+
+
+class AdminResponse(BaseModel):
+    name: str
+    email: str
+    photo_url: str
+    role: str = "admin"
+    created_at: datetime

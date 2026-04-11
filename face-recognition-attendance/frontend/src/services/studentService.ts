@@ -15,8 +15,11 @@ export interface VerifyFaceResult {
   reason?: string;
 }
 
-export const verifyFace = (imageData: string): Promise<VerifyFaceResult> => {
-  return apiPost('/student/verify-face', { imageData });
+export const verifyFace = (
+  imageData: string,
+  expectedStudentId?: string
+): Promise<VerifyFaceResult> => {
+  return apiPost('/student/verify-face', { imageData, expectedStudentId });
 };
 
 export interface RegisterStudentResult {
@@ -27,6 +30,13 @@ export interface RegisterStudentResult {
   registered: boolean;
 }
 
+export interface RegisterAdminResult {
+  name: string;
+  email: string;
+  photo_url: string;
+  role: 'admin';
+}
+
 export const registerStudent = (
   studentId: string,
   name: string,
@@ -34,6 +44,14 @@ export const registerStudent = (
   photoUrl: string = ''
 ): Promise<RegisterStudentResult> => {
   return apiPost('/student/register-student', { studentId, name, email, photoUrl });
+};
+
+export const registerAdmin = (
+  name: string,
+  email: string,
+  photoUrl: string = ''
+): Promise<RegisterAdminResult> => {
+  return apiPost('/student/register-admin', { name, email, photoUrl });
 };
 
 export interface StudentProfile {
