@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>AI Attendance</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="min-h-screen bg-slate-950 text-slate-100">
+  <div class="max-w-3xl mx-auto px-4 py-10">
+
+<div class="flex items-center justify-between mb-8">
+  <div>
+    <h1 class="text-3xl font-bold tracking-tight">AI Attendance</h1>
+    <p class="text-slate-300 mt-1">Upload a short selfie video to mark attendance.</p>
+  </div>
+
+  <div class="flex items-center gap-2">
+    <button id="numaanExportBtn"
+      class="text-xs px-4 py-2 rounded-xl bg-slate-800 border border-slate-700 hover:bg-slate-700 transition">
+      Export CSV
+    </button>
+    <span class="text-xs px-3 py-1 rounded-full bg-slate-800 border border-slate-700">FastAPI</span>
+  </div>
+</div>
+
+
+    <div class="bg-slate-900/50 border border-slate-800 rounded-2xl p-6 shadow-lg">
+      <form id="numaanForm" class="space-y-5">
+        <div>
+          <label class="block text-sm font-medium text-slate-200 mb-2">Student ID</label>
+          <input id="numaanStudentId" type="text" placeholder="e.g., numaan_1"
+                 class="w-full px-4 py-3 rounded-xl bg-slate-950 border border-slate-800 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                 required />
+          <p class="text-xs text-slate-400 mt-2">Use the same ID you used during enrollment.</p>
+        </div>
+
+        <div>
+          <label class="block text-sm font-medium text-slate-200 mb-2">Video (.mp4)</label>
+          <input id="numaanVideo" type="file" accept="video/mp4,video/*"
+                 class="w-full text-sm file:mr-4 file:py-2 file:px-4 file:rounded-xl
+                        file:border-0 file:text-sm file:font-semibold
+                        file:bg-indigo-600 file:text-white hover:file:bg-indigo-500
+                        bg-slate-950 border border-slate-800 rounded-xl px-3 py-3"
+                 required />
+          <p class="text-xs text-slate-400 mt-2">Tip: 2–6 seconds, good lighting, face centered.</p>
+        </div>
+
+        <div id="numaanPreviewWrap" class="hidden">
+          <label class="block text-sm font-medium text-slate-200 mb-2">Preview</label>
+          <video id="numaanPreview" controls class="w-full rounded-xl border border-slate-800"></video>
+        </div>
+
+        <button id="numaanBtn" type="submit"
+                class="w-full py-3 rounded-xl bg-indigo-600 hover:bg-indigo-500 transition font-semibold">
+          Mark Attendance
+        </button>
+
+        <div id="numaanStatus" class="hidden text-sm"></div>
+      </form>
+    </div>
+
+    <div id="numaanResult" class="hidden mt-6 bg-slate-900/50 border border-slate-800 rounded-2xl p-6">
+      <div class="flex items-center justify-between">
+        <h2 class="text-lg font-semibold">Result</h2>
+        <span id="numaanBadge" class="text-xs px-3 py-1 rounded-full"></span>
+      </div>
+
+      <div class="mt-4 grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm">
+        <div class="bg-slate-950 border border-slate-800 rounded-xl p-4">
+          <div class="text-slate-400">Present</div>
+          <div id="numaanPresent" class="text-xl font-bold mt-1">-</div>
+        </div>
+
+        <div class="bg-slate-950 border border-slate-800 rounded-xl p-4">
+          <div class="text-slate-400">Similarity (median)</div>
+          <div id="numaanSim" class="text-xl font-bold mt-1">-</div>
+        </div>
+
+        <div class="bg-slate-950 border border-slate-800 rounded-xl p-4">
+          <div class="text-slate-400">Frames extracted</div>
+          <div id="numaanFrames" class="text-xl font-bold mt-1">-</div>
+        </div>
+
+        <div class="bg-slate-950 border border-slate-800 rounded-xl p-4">
+          <div class="text-slate-400">Usable face frames</div>
+          <div id="numaanUsable" class="text-xl font-bold mt-1">-</div>
+        </div>
+      </div>
+
+      <div class="mt-4">
+        <details class="bg-slate-950 border border-slate-800 rounded-xl p-4">
+          <summary class="cursor-pointer text-sm text-slate-200">Raw JSON</summary>
+          <pre id="numaanRaw" class="mt-3 text-xs text-slate-200 overflow-auto"></pre>
+        </details>
+      </div>
+    </div>
+
+    <p class="text-xs text-slate-500 mt-8">
+      API docs: <a class="underline" href="/docs">/docs</a>
+    </p>
+  </div>
+
+  <script src="/static/app.js"></script>
+</body>
+</html>
