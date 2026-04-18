@@ -1,0 +1,271 @@
+/* ============================================================
+   Admin Page
+   ============================================================ */
+
+.admin-page {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  background: #000000;
+  color: #fff;
+  font-family: Arial, sans-serif;
+}
+
+.admin-page__title {
+  position: fixed;
+  top: 16px;
+  left: 20px;
+  z-index: 10;
+  margin: 0;
+  font-size: 1.25rem;
+  color: white;
+}
+
+.admin-page__main {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  flex: 1;
+  width: 100%;
+  padding-top: 64px;
+  padding-bottom: 80px;
+  box-sizing: border-box;
+  gap: 24px;
+}
+
+/* ---- Filter Bar ---- */
+.admin-page__filters {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  width: 85%;
+  flex-wrap: wrap;
+}
+
+.admin-page__filter-group {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.admin-page__filter-group label {
+  font-size: 0.9rem;
+  color: #aaa;
+}
+
+.admin-page__filter-group input[type="date"] {
+  padding: 8px 12px;
+  border-radius: 8px;
+  border: 1px solid #444;
+  background: #1a1a1a;
+  color: #fff;
+  font-size: 0.9rem;
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.admin-page__filter-group input[type="date"]:focus {
+  border-color: #cddc39;
+}
+
+.admin-page__filter-btn {
+  padding: 8px 20px;
+  border-radius: 8px;
+  border: none;
+  background: #cddc39;
+  color: #1f1f1f;
+  font-weight: 700;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: transform 0.15s, box-shadow 0.15s;
+}
+
+.admin-page__filter-btn:hover {
+  transform: scale(1.04);
+  box-shadow: 0 4px 16px rgba(205, 220, 57, 0.25);
+}
+
+.admin-page__export-btn {
+  padding: 8px 20px;
+  border-radius: 8px;
+  border: 2px solid #4caf50;
+  background: transparent;
+  color: #4caf50;
+  font-weight: 700;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.admin-page__export-btn:hover:not(:disabled) {
+  background: #4caf50;
+  color: #fff;
+}
+
+.admin-page__export-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* ---- Table ---- */
+.admin-page__table-wrapper {
+  width: 85%;
+  overflow-x: auto;
+  border-radius: 12px;
+  background: #1a1a1a;
+}
+
+.admin-page__table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.95rem;
+}
+
+.admin-page__table th {
+  text-align: left;
+  padding: 14px 18px;
+  background: #222;
+  color: #cddc39;
+  font-weight: 700;
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  border-bottom: 2px solid #333;
+}
+
+.admin-page__table td {
+  padding: 12px 18px;
+  border-bottom: 1px solid #2a2a2a;
+  color: #ccc;
+}
+
+.admin-page__table tr:hover td {
+  background: #222;
+}
+
+.admin-page__status--late {
+  color: orange;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.admin-page__status--excused {
+  color: blue;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.admin-page__status--present {
+  color: #4caf50;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.admin-page__status--absent {
+  color: #f44336;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+
+/* ---- Empty / Loading States ---- */
+.admin-page__empty {
+  padding: 60px 20px;
+  text-align: center;
+  color: #666;
+  font-size: 1rem;
+}
+
+.admin-page__loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  padding: 60px;
+  color: #aaa;
+}
+
+.admin-page__spinner {
+  width: 40px;
+  height: 40px;
+  border: 3px solid rgba(255, 255, 255, 0.15);
+  border-top-color: #cddc39;
+  border-radius: 50%;
+  animation: admin-spin 0.7s linear infinite;
+}
+
+@keyframes admin-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* ---- Summary Row ---- */
+.admin-page__summary {
+  width: 85%;
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.admin-page__summary-card {
+  flex: 1;
+  min-width: 140px;
+  padding: 16px 20px;
+  border-radius: 12px;
+  background: #1a1a1a;
+  text-align: center;
+}
+
+.admin-page__summary-value {
+  font-size: 2rem;
+  font-weight: 700;
+  margin: 0;
+}
+
+.admin-page__summary-value--total {
+  color: #cddc39;
+}
+
+.admin-page__summary-value--present {
+  color: #4caf50;
+}
+
+.admin-page__summary-value--absent {
+  color: #f44336;
+}
+.admin-page__summary-value--late {
+  color: orange;
+}
+.admin-page__summary-value--excused {
+  color: blue;
+}
+
+.admin-page__summary-label {
+  font-size: 0.8rem;
+  color: #888;
+  margin: 4px 0 0;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* ---- Back button ---- */
+.admin-page__back-btn {
+  position: fixed;
+  bottom: 24px;
+  left: 24px;
+  padding: 10px 22px;
+  border-radius: 8px;
+  border: none;
+  background: #ffffff;
+  color: #1f1f1f;
+  font-weight: 600;
+  cursor: pointer;
+  z-index: 10;
+  transition: transform 0.15s;
+}
+
+.admin-page__back-btn:hover {
+  transform: scale(1.04);
+}
+
