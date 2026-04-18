@@ -143,6 +143,18 @@
   background: #222;
 }
 
+.admin-page__status--late {
+  color: orange;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.admin-page__status--excused {
+  color: blue;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
 .admin-page__status--present {
   color: #4caf50;
   font-weight: 600;
@@ -154,6 +166,7 @@
   font-weight: 600;
   text-transform: uppercase;
 }
+
 
 /* ---- Empty / Loading States ---- */
 .admin-page__empty {
@@ -221,6 +234,12 @@
 .admin-page__summary-value--absent {
   color: #f44336;
 }
+.admin-page__summary-value--late {
+  color: orange;
+}
+.admin-page__summary-value--excused {
+  color: blue;
+}
 
 .admin-page__summary-label {
   font-size: 0.8rem;
@@ -245,6 +264,12 @@
   z-index: 10;
   transition: transform 0.15s;
 }
+
+.admin-page__back-btn:hover {
+  transform: scale(1.04);
+}
+
+
 
 .admin-page__back-btn:hover {
   transform: scale(1.04);
