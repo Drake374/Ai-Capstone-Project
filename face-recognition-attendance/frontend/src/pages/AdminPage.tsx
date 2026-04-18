@@ -61,6 +61,8 @@ const AdminPage = () => {
   const totalLogs = logs.length;
   const presentCount = logs.filter((l) => l.status === 'present').length;
   const absentCount = logs.filter((l) => l.status === 'absent').length;
+  const lateCount = logs.filter((l) => l.status === 'late').length;
+  const excusedCount = logs.filter((l) => l.status === 'excused').length;
 
   return (
     <div className="admin-page">
@@ -75,20 +77,35 @@ const AdminPage = () => {
             </p>
             <p className="admin-page__summary-label">Total Records</p>
           </div>
+
           <div className="admin-page__summary-card">
             <p className="admin-page__summary-value admin-page__summary-value--present">
               {presentCount}
             </p>
             <p className="admin-page__summary-label">Present</p>
           </div>
+
           <div className="admin-page__summary-card">
             <p className="admin-page__summary-value admin-page__summary-value--absent">
               {absentCount}
             </p>
             <p className="admin-page__summary-label">Absent</p>
           </div>
-        </div>
 
+          <div className="admin-page__summary-card">
+            <p className="admin-page__summary-value admin-page__summary-value--late">
+              {lateCount}
+            </p>
+            <p className="admin-page__summary-label">Late</p>
+          </div>
+
+          <div className="admin-page__summary-card">
+            <p className="admin-page__summary-value admin-page__summary-value--excused">
+              {excusedCount}
+            </p>
+            <p className="admin-page__summary-label">Excused</p>
+          </div>
+        </div>
         {/* Filter Bar */}
         <div className="admin-page__filters">
           <div className="admin-page__filter-group">
@@ -157,7 +174,11 @@ const AdminPage = () => {
                         className={
                           log.status === 'present'
                             ? 'admin-page__status--present'
-                            : 'admin-page__status--absent'
+                            : log.status === 'absent'
+                            ? 'admin-page__status--absent'
+                            : log.status === 'late'
+                            ? 'admin-page__status--late'
+                            : 'admin-page__status--excused'
                         }
                       >
                         {log.status}
