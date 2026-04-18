@@ -3,11 +3,14 @@ from ml.embedding import extract_embeddings, cosine_similarity
 from db.face_repo import save_embeddings, get_all_embeddings
 from db.attendance_repo import save_attendance_log
 from utils.image_utils import decode_base64_image
+from datetime import datetime, time
 
 logger = logging.getLogger(__name__)
 
 SIMILARITY_THRESHOLD = 0.6
 
+#the time for cutoff for late attendance (9:05 AM)
+LATE_CUTOFF = time(9, 5)
 
 async def register_student_faces(student_id: str, frames: list[str]) -> None:
     """
@@ -90,9 +93,16 @@ async def verify_face(frame_data_url: str, expected_student_id: str | None = Non
 
     # 5. Save attendance log and return result
     if is_match and matched_expected_student:
+        current_time = datetime.now().time()
+
+        if current_time > LATE_CUTOFF:
+            status = "late"
+        else:
+            status = "present"
+
         await save_attendance_log(
             student_id=best_student_id,
-            status="present",
+            status=status,
             similarity=best_similarity,
         )
         return {
