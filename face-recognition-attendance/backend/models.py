@@ -1,5 +1,5 @@
 from pydantic import BaseModel, Field
-from typing import Optional
+from typing import Literal, Optional
 from datetime import datetime
 
 class FaceEmbeddingCreate(BaseModel):
@@ -19,14 +19,14 @@ class FaceEmbeddingResponse(BaseModel):
 
 class AttendanceLog(BaseModel):
     student_id: str
-    status: str  # "present" or "absent"
+    status: Literal["present", "absent", "late", "excused"]
     similarity: float
     timestamp: datetime = Field(default_factory=datetime.now)
 
 
 class AttendanceLogResponse(BaseModel):
     student_id: str
-    status: str
+    status: Literal["present", "absent", "late", "excused"]
     similarity: float
     timestamp: datetime
 
