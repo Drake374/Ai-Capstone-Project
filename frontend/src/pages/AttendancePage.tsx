@@ -4,7 +4,7 @@ import { useWebcam } from '../hooks/useWebcam';
 import { verifyFace, type VerifyFaceResult } from '../services/studentService';
 import './AttendancePage.css';
 
-const SESSION_DURATION_MS = 45 * 60 * 1000;
+const SESSION_DURATION_MS = 5 * 60 * 1000;
 const MIN_CHECK_DELAY_MS = 2 * 60 * 1000;
 const MAX_CHECK_DELAY_MS = 8 * 60 * 1000;
 const FINAL_WINDOW_MS = 8 * 60 * 1000;
@@ -403,7 +403,7 @@ const AttendancePage = () => {
               <div className="attendance-page__session-metrics">
                 <div className="attendance-page__metric">
                   <span className="attendance-page__metric-label">Session length</span>
-                  <strong>45 min</strong>
+                  <strong>5 min</strong>
                 </div>
                 <div className="attendance-page__metric">
                   <span className="attendance-page__metric-label">Time remaining</span>
