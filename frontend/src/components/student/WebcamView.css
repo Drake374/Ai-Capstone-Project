@@ -1,0 +1,150 @@
+.webcam-view {
+  flex: 4;
+  min-height: 0; /* ← KEPT: allows flex container to shrink properly */
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  gap: 16px;
+  box-sizing: border-box;
+  overflow: hidden; /* ← ADDED: prevents any overflow */
+  border-radius: var(--border-radius);
+}
+
+.webcam-view video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover; /* Changed from contain to cover for full coverage */
+  border-radius: var(--border-radius);
+  flex-shrink: 1; /* ← ADDED: allows video to shrink if needed */
+  position: absolute; /* Position video absolutely to fill container */
+  top: 0;
+  left: 0;
+}
+
+.webcam-view video {
+  transition: border-radius 0.2s ease;
+}
+
+.webcam-view canvas {
+  display: none;
+}
+
+/* Container for video content to allow absolute positioning of buttons */
+.video-container {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  border-radius: var(--border-radius);
+}
+
+/* Button container that sits on top of video */
+.video-buttons {
+  position: absolute;
+  bottom: 20px;
+  left: 0;
+  right: 0;
+  display: flex;
+  justify-content: center;
+  z-index: 10;
+  gap: 16px;
+  padding: 0 20px;
+}
+
+.webcam-button {
+  position: relative;
+  padding: 10px 20px;
+  margin: 0;
+  flex-shrink: 0; /* ← ADDED: prevents button from shrinking */
+  background-color: rgba(255, 255, 255, 0.9);
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: all 0.2s ease;
+}
+
+.webcam-button:hover {
+  background-color: rgba(240, 240, 240, 0.95);
+  transform: scale(1.05);
+}
+
+.webcam-preview-buttons {
+  display: flex;
+  gap: 10px;
+  width: 200px;
+  margin: 0;
+  flex-shrink: 0; /* ← ADDED: prevents button group from shrinking */
+}
+
+.accept-btn,
+.retake-btn {
+  flex: 1;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: all 0.2s ease;
+}
+
+.accept-btn {
+  background-color: var(--lg);
+  /* color: white; */
+}
+
+.accept-btn:hover:not(:disabled) {
+  background-color: var(--lg);
+  transform: scale(1.05);
+}
+
+.retake-btn {
+  background-color: rgba(244, 67, 54, 0.9);
+  /* color: white; */
+}
+
+.retake-btn:hover:not(:disabled) {
+  background-color: rgba(244, 67, 54, 1);
+  transform: scale(1.05);
+}
+
+.accept-btn:disabled,
+.retake-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.open-camera-btn {
+  padding: 12px 24px;
+  font-size: 16px;
+  /* background-color: rgba(255, 255, 255, 0.9); */
+  /* color: white; */
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.open-camera-btn:hover {
+  background-color: rgba(255, 255, 255, 0.9);
+  transform: scale(1.05);
+}
+
+.webcam-placeholder {
+  width: 100%;
+  height: 100%;
+  background: white;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  box-sizing: border-box;
+  overflow: hidden; /* ← ADDED: prevents overflow */
+  min-height: 0; /* ← ADDED: allows flex container to shrink */
+  position: relative;
+  border-radius: var(--border-radius);
+}
