@@ -1,9 +1,10 @@
 import logging
 from ml.embedding import extract_embeddings, cosine_similarity
 from db.face_repo import save_embeddings, get_all_embeddings
-from db.attendance_repo import save_attendance_log
 from utils.image_utils import decode_base64_image
 from datetime import datetime, time
+from db.attendance_repo import save_attendance_log
+
 
 logger = logging.getLogger(__name__)
 
@@ -49,78 +50,75 @@ async def register_student_faces(student_id: str, frames: list[str]) -> None:
 
     await save_embeddings(student_id=student_id, embeddings=embeddings)
 
+async def verify_face(
+    frame_data_url: str,
+    session_id: str,
+    expected_student_id: str | None = None
+) -> dict:
 
-async def verify_face(frame_data_url: str, expected_student_id: str | None = None) -> dict:
-    """
-    Verify a face against all stored embeddings using cosine similarity.
-    Returns match result with student_id and similarity score.
-    """
     logger.info("Starting face verification")
 
-    # 1. Decode base64 frame → PIL image
+    # 1. Decode image
     image = decode_base64_image(frame_data_url)
-    logger.info(f"Decoded verification image: {image.size}, mode: {image.mode}")
 
-    # 2. Extract embedding from the captured frame
+    # 2. Extract embedding
     embedding = extract_embeddings(image)
+
     if embedding is None:
-        logger.warning("No face detected in verification frame")
-        return {"matched": False, "reason": "No face detected in the frame"}
+        logger.warning("No face detected")
 
-    # 3. Fetch all stored embeddings from MongoDB
+        await save_attendance_log(
+            student_id=expected_student_id or "unknown",
+            status="absent",
+            similarity=0.0,
+        )
+
+        return {"matched": False, "reason": "No face detected"}
+
+    # 3. Get stored embeddings
     stored = await get_all_embeddings()
-    if not stored:
-        logger.warning("No registered faces found in database")
-        return {"matched": False, "reason": "No registered faces in the system"}
 
-    # 4. Compute cosine similarity against each stored embedding
+    if not stored:
+        return {"matched": False, "reason": "No registered faces"}
+
+    # 4. Find best match
     best_similarity = -1.0
     best_student_id = None
 
     for record in stored:
         sim = cosine_similarity(embedding, record.embedding)
-        logger.debug(f"Similarity with {record.student_id}: {sim:.4f}")
         if sim > best_similarity:
             best_similarity = sim
             best_student_id = record.student_id
 
-    logger.info(f"Best match: student_id={best_student_id}, similarity={best_similarity:.4f}")
-
     is_match = best_similarity >= SIMILARITY_THRESHOLD
-    matched_expected_student = (
+    matched_expected = (
         expected_student_id is None or best_student_id == expected_student_id
     )
 
-    # 5. Save attendance log and return result
-    if is_match and matched_expected_student:
-        current_time = datetime.now().time()
+    passed = is_match and matched_expected
 
-        if current_time > LATE_CUTOFF:
-            status = "late"
-        else:
-            status = "present"
-
-        await save_attendance_log(
-            student_id=best_student_id,
-            status=status,
-            similarity=best_similarity,
-        )
+    student_id_for_check = (
+        best_student_id if passed else (expected_student_id or "unknown")
+    )
+    await save_attendance_log(
+        student_id=student_id_for_check,
+        status="present" if passed else "absent",
+        similarity=best_similarity,
+    )
+    # 5. Return result
+    if passed:
         return {
             "matched": True,
             "student_id": best_student_id,
             "similarity": round(best_similarity, 4),
         }
-    student_id_for_log = expected_student_id or best_student_id or "unknown"
+
     reason = "Face did not match any registered student"
 
     if is_match and expected_student_id and best_student_id != expected_student_id:
         reason = "Face matched a different registered student"
 
-    await save_attendance_log(
-        student_id=student_id_for_log,
-        status="absent",
-        similarity=best_similarity,
-    )
     return {
         "matched": False,
         "similarity": round(best_similarity, 4),

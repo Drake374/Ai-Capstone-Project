@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Header, HTTPException, Query
 from fastapi.responses import StreamingResponse
 from datetime import datetime, timedelta
-from db.attendance_repo import get_attendance_logs
+from db.attendance_repo import get_attendance_logs, finalize_attendance_for_session
 from db.student_repo import get_student
 import csv
 import io
@@ -50,6 +50,17 @@ async def attendance_logs(
         })
 
     return results
+
+
+@router.post("/finalize-attendance/{session_id}")
+async def finalize_attendance(
+    session_id: str,
+    _: str = Header(None, alias="x-user-email"),
+):
+    """Finalize attendance for a session based on check results."""
+    _require_admin(_)
+    await finalize_attendance_for_session(session_id)
+    return {"message": f"Attendance finalized for session {session_id}"}
 
 
 @router.get("/attendance-logs/export")

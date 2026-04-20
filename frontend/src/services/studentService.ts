@@ -17,9 +17,10 @@ export interface VerifyFaceResult {
 
 export const verifyFace = (
   imageData: string,
+  sessionId: string,
   expectedStudentId?: string
 ): Promise<VerifyFaceResult> => {
-  return apiPost('/student/verify-face', { imageData, expectedStudentId });
+  return apiPost('/student/verify-face', { imageData, sessionId, expectedStudentId });
 };
 
 export interface RegisterStudentResult {

@@ -155,6 +155,12 @@
   text-transform: uppercase;
 }
 
+.admin-page__status--partial {
+  color: #ffffff;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
 .admin-page__status--present {
   color: #4caf50;
   font-weight: 600;
@@ -239,6 +245,10 @@
 }
 .admin-page__summary-value--excused {
   color: blue;
+}
+
+.admin-page__summary-value--partial {
+  color: #ffffff;
 }
 
 .admin-page__summary-label {

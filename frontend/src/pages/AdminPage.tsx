@@ -63,6 +63,7 @@ const AdminPage = () => {
   const absentCount = logs.filter((l) => l.status === 'absent').length;
   const lateCount = logs.filter((l) => l.status === 'late').length;
   const excusedCount = logs.filter((l) => l.status === 'excused').length;
+  const partialCount = logs.filter((l) => l.status === 'partial').length;
 
   return (
     <div className="admin-page">
@@ -104,6 +105,13 @@ const AdminPage = () => {
               {excusedCount}
             </p>
             <p className="admin-page__summary-label">Excused</p>
+          </div>
+
+          <div className="admin-page__summary-card">
+            <p className="admin-page__summary-value admin-page__summary-value--partial">
+              {partialCount}
+            </p>
+            <p className="admin-page__summary-label">Partial</p>
           </div>
         </div>
         {/* Filter Bar */}
@@ -178,6 +186,8 @@ const AdminPage = () => {
                             ? 'admin-page__status--absent'
                             : log.status === 'late'
                             ? 'admin-page__status--late'
+                            : log.status === 'partial'
+                            ? 'admin-page__status--partial'
                             : 'admin-page__status--excused'
                         }
                       >

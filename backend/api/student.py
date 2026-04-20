@@ -32,6 +32,7 @@ class RegisterFacesRequest(BaseModel):
 
 class VerifyFaceRequest(BaseModel):
     imageData: str  # base64 encoded image
+    sessionId: str
     expectedStudentId: str | None = None
 
 
@@ -156,6 +157,7 @@ async def verify_face_endpoint(body: VerifyFaceRequest):
     try:
         result = await verify_face(
             frame_data_url=body.imageData,
+            session_id=body.sessionId,
             expected_student_id=body.expectedStudentId,
         )
         return result

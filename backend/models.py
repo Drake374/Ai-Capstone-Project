@@ -19,14 +19,30 @@ class FaceEmbeddingResponse(BaseModel):
 
 class AttendanceLog(BaseModel):
     student_id: str
-    status: Literal["present", "absent", "late", "excused"]
+    status: Literal["present", "absent", "late", "excused", "partial"]
     similarity: float
     timestamp: datetime = Field(default_factory=datetime.now)
 
 
 class AttendanceLogResponse(BaseModel):
     student_id: str
-    status: Literal["present", "absent", "late", "excused"]
+    status: Literal["present", "absent", "late", "excused", "partial"]
+    similarity: float
+    timestamp: datetime
+
+
+class CheckResult(BaseModel):
+    student_id: str
+    session_id: str
+    passed: bool
+    similarity: float
+    timestamp: datetime = Field(default_factory=datetime.now)
+
+
+class CheckResultResponse(BaseModel):
+    student_id: str
+    session_id: str
+    passed: bool
     similarity: float
     timestamp: datetime
 
@@ -65,3 +81,11 @@ class AdminResponse(BaseModel):
     photo_url: str
     role: str = "admin"
     created_at: datetime
+
+
+class AttendanceCheck(BaseModel):
+    student_id: str
+    session_id: str
+    passed: bool
+    similarity: float | None = None
+    timestamp: datetime = Field(default_factory=datetime.now)

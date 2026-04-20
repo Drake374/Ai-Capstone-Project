@@ -38,6 +38,7 @@ const AttendancePage = () => {
   const [checkNumber, setCheckNumber] = useState(0);
   const [lateWindowCheckPassed, setLateWindowCheckPassed] = useState(false);
   const [sessionStartedAt, setSessionStartedAt] = useState<number | null>(null);
+  const [sessionId, setSessionId] = useState<string | null>(null);
   const [sessionEndsAt, setSessionEndsAt] = useState<number | null>(null);
   const [sessionTimeRemainingLabel, setSessionTimeRemainingLabel] = useState('45:00');
   const [monitoringMessage, setMonitoringMessage] = useState(
@@ -119,8 +120,8 @@ const AttendancePage = () => {
 
   const runVerification = useCallback(async (label: string) => {
     const imageData = captureFrame();
-    if (!imageData || !expectedStudentId) {
-      setMonitoringMessage('Missing student identity or camera frame for verification.');
+    if (!imageData || !expectedStudentId || !sessionId) {
+      setMonitoringMessage('Missing student identity, session ID, or camera frame for verification.');
       setMonitoringActive(false);
       clearAttendanceTimers();
       return;
@@ -131,7 +132,7 @@ const AttendancePage = () => {
     setMonitoringMessage(`${label} in progress...`);
 
     try {
-      const res = await verifyFace(imageData, expectedStudentId);
+      const res = await verifyFace(imageData, sessionId, expectedStudentId);
       const now = Date.now();
       const inLateWindow = sessionEndsAt !== null && sessionEndsAt - now <= FINAL_WINDOW_MS;
       const nextCheckCount = checkNumber + 1;
@@ -176,6 +177,7 @@ const AttendancePage = () => {
     failedChecks,
     sessionEndsAt,
     successfulChecks,
+    sessionId,
   ]);
 
   const scheduleNextCheck = useCallback(() => {
@@ -306,6 +308,8 @@ const AttendancePage = () => {
     setLateWindowCheckPassed(false);
     setActiveChallenge(null);
     setResult(null);
+    const newSessionId = `session-${startTime}`;
+    setSessionId(newSessionId);
     setSessionStartedAt(startTime);
     setSessionEndsAt(endTime);
     setSessionTimeRemainingLabel(formatDuration(SESSION_DURATION_MS));
@@ -329,6 +333,7 @@ const AttendancePage = () => {
     setActiveChallenge(null);
     setSessionComplete(false);
     setSessionOutcome(null);
+    setSessionId(null);
     setSessionEndsAt(null);
     setMonitoringMessage('Attendance monitoring stopped before the session completed.');
   }, [clearAttendanceTimers]);
